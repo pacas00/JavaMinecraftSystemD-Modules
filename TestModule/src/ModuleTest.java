@@ -1,8 +1,9 @@
 import com.google.common.eventbus.Subscribe;
 
 import net.petercashel.jmsDd.daemonMain;
-import net.petercashel.jmsDd.event.*;
-import net.petercashel.jmsDd.module.core.Module;
+import net.petercashel.jmsDd.API.API;
+import net.petercashel.jmsDd.event.module.*;
+import net.petercashel.jmsDd.module.Module;
 
 
 @Module(ModuleName = "TestModule")
@@ -10,7 +11,7 @@ public class ModuleTest {
 	
 	public ModuleTest() {
 		System.out.println("This is where you'd call your code to subscribe to events");
-		daemonMain.eventBus.register(this);
+		API.Impl.getAPI().registerEventBus(this);
 	}
 	
 	@Subscribe
