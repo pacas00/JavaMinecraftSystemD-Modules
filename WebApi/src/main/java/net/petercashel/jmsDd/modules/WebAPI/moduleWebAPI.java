@@ -65,8 +65,7 @@ public class moduleWebAPI {
 
 	@Subscribe
 	public static void init(ModuleInitEvent e) {
-		
-		
+		e.apiInstance.getEventBus().post(new WebAPIRegisterHandlerEvent(server));
 	}
 
 	@Subscribe
