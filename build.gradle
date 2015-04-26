@@ -1,3 +1,22 @@
+subprojects {
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+		maven {
+            name = "HTB3"
+            url = "http://htb2.petercashel.net:81"
+        }
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+}
+
 allprojects {
     task hello << {task -> println "Building $task.project.name" }
 }
