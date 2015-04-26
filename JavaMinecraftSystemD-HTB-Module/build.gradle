@@ -15,12 +15,12 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group = 'net.petercashel.JMSDd'
+group = 'net.petercashel.JMSDd.Module'
 version = '1.0.1'
 archivesBaseName = 'Module-HTB'
 buildDir = 'target'
 
-defaultTasks 'build', 'install'
+defaultTasks 'clean', 'build', 'install', 'uploadArchives'
 
 repositories {
         mavenCentral()
