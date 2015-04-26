@@ -4,7 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -57,3 +56,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+JavaMinecraftSystemD-HTB-Module/target/libs/Module-HTB-1.0.1.jar
