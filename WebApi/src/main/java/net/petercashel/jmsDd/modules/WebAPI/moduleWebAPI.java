@@ -46,7 +46,7 @@ public class moduleWebAPI {
 
 	@Subscribe
 	public static void loadConfig(ModuleConfigEvent e) {
-		JsonObject cfgRoot = e.apiInstance.getConfigJSONObject(e._cfg, ModuleName);
+		JsonObject cfgRoot = e.apiInstance.getConfigJSONObject(e.getConfig(), ModuleName);
 		port = e.apiInstance.getConfigDefault(cfgRoot, "APIPort", 14480);
 		socketAddress = new InetSocketAddress(port);
 	}
