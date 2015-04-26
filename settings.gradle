@@ -1,7 +1,3 @@
 rootProject.name = 'JavaMinecraftSystemD-Modules'
 
-def projectTreeRootDir = new File( "${ProjectsRoot}" )
-
-// Modules
-
 includeFlat 'TestModule', 'JavaMinecraftSystemD-HTB-Module'

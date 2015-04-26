@@ -1,0 +1,10 @@
+allprojects {
+    task hello << {task -> println "I'm $task.project.name" }
+}
+gradle.afterProject {project, projectState ->
+    if (projectState.failure) {
+        println "Evaluation of $project FAILED"
+    } else {
+        println "Evaluation of $project succeeded"
+    }
+}
