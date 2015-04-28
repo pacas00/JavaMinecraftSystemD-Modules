@@ -16,6 +16,7 @@ package net.petercashel.HTBModule;
  *******************************************************************************/
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -24,7 +25,7 @@ import com.google.common.eventbus.Subscribe;
 import net.petercashel.jmsDd.Configuration;
 import net.petercashel.jmsDd.API.API;
 import net.petercashel.jmsDd.event.module.*;
-import net.petercashel.jmsDd.event.process.ProcessPreRestartEvent;
+import net.petercashel.jmsDd.event.process.*;
 import net.petercashel.jmsDd.module.Module;
 
 @Module(ModuleName = "HTB_Module")
@@ -108,6 +109,14 @@ public class HTB_Module {
 	
     private static void doUpdate() {
     	
+    	try {
+			Thread.sleep(5000);
+		}
+		catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	
         println("********************");
         println("********************");
         println("********************");
@@ -116,6 +125,7 @@ public class HTB_Module {
         println("********************");
         println("********************");
 
+        
         File installDir = new File(API.Impl.getAPI().getConfigDefault(API.Impl.getAPI().getConfigJSONObject(Configuration.cfg, "processSettings"), "processWorkingDirectory", ""));
         // Installer functions as it normally does, except it gets called via this method and not the loader
 
@@ -158,47 +168,27 @@ public class HTB_Module {
             }
         }
 
-        boolean added = false;
-        if (Installfile.exists()) {
-            API.Impl.getAPI().LoadJar(Installfile);
-			added = true;
-        }
+        try {
+			ProcessBuilder pb1 = new ProcessBuilder("/usr/bin/java", "-jar", Installfile.toPath().toString(), "--installServer");
+			pb1.redirectOutput(Redirect.PIPE);
+			Process ps1 = null;
+			try {
+				ps1 = pb1.start();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				ps1.waitFor();
+			}
+			catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		} catch (Exception e) {
 
-        if (added) {
-            // Call HTB-Installer via its loader
-            String[] arg = new String[1];
-            arg[0] = "--installServer";
-            try {
-                Class<?> clazz = Class.forName("net.petercashel.launch.Loader");
-                Method m = clazz.getMethod("main", String[].class);
-                m.invoke(null, (Object)arg);
-            } catch (ClassNotFoundException e) {
-                // Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("NO UPDATER");
-                System.out.println("Cannot Continue");
-            } catch (NoSuchMethodException e) {
-                // Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("Cannot Continue");
-            } catch (SecurityException e) {
-                //  Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("Cannot Continue");
-            } catch (IllegalAccessException e) {
-                //  Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("Cannot Continue");
-            } catch (IllegalArgumentException e) {
-                //  Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("Cannot Continue");
-            } catch (InvocationTargetException e) {
-                //  Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("Cannot Continue");
-            }
-        }
+		}
 
         println("********************");
         println("********************");
