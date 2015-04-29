@@ -174,7 +174,7 @@ public class HTB_Module {
             }
         }
 
-        String javaPath = (System.getProperty("java.home") + File.separator + "java");
+        String javaPath = (System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
         if (OS_Util.isWinNT()) {
         	javaPath = (System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe");
         }
@@ -191,19 +191,6 @@ public class HTB_Module {
 				// TODO Auto-generated catch block
 				e.printStackTrace(API.Impl.getAPI().OutputToClient());
 			}
-			
-			final InputStream in = ps1.getInputStream();
-
-			threadManager.getInstance().addRunnable(new Runnable() {
-				@Override
-				public void run() {
-					Scanner sc = new Scanner(in);
-						while (sc.hasNextLine()) {
-							String s = sc.nextLine();
-							println(s);
-						}
-				}
-			});
 			try {
 				ps1.waitFor();
 			}
