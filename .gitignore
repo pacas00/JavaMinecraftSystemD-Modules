@@ -1,4 +1,5 @@
 *.class
+.gradle/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -57,3 +58,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 JavaMinecraftSystemD-HTB-Module/target/libs/Module-HTB-1.0.1.jar
+.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
+*.prefs
+JavaMinecraftSystemD-HTB-Module/.project
+*.classpath
+JavaMinecraftSystemD-HTB-Module/.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs

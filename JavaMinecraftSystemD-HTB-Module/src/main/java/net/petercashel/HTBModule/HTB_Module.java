@@ -27,9 +27,12 @@ import net.petercashel.jmsDd.API.API;
 import net.petercashel.jmsDd.event.module.*;
 import net.petercashel.jmsDd.event.process.*;
 import net.petercashel.jmsDd.module.Module;
+import net.petercashel.jmsDd.util.ASMPlugin;
+import net.petercashel.jmsDd.util.ASMTransformer;
 
 @Module(ModuleName = "HTB_Module")
 public class HTB_Module {
+	static ASMPlugin installerASM = new HTBInstallerASMPlug();
 
 	@Subscribe
 	public static void loadConfig(ModuleConfigEvent e) {
@@ -39,7 +42,7 @@ public class HTB_Module {
 
 	@Subscribe
 	public static void preInit(ModulePreInitEvent e) {
-		
+		ASMTransformer.addASMPlugin(installerASM);
 	}
 
 	@Subscribe
