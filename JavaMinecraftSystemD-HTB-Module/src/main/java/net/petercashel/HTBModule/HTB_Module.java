@@ -16,14 +16,21 @@ package net.petercashel.HTBModule;
  *******************************************************************************/
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import com.google.common.eventbus.Subscribe;
+import net.petercashel.commonlib.threading.threadManager;
+import net.petercashel.commonlib.util.OS_Util;
 import net.petercashel.jmsDd.Configuration;
+import net.petercashel.jmsDd.daemonMain;
 import net.petercashel.jmsDd.API.API;
+import net.petercashel.jmsDd.command.ICommand;
+import net.petercashel.jmsDd.command.commandServer;
 import net.petercashel.jmsDd.event.module.*;
 import net.petercashel.jmsDd.event.process.*;
 import net.petercashel.jmsDd.module.Module;
@@ -43,6 +50,7 @@ public class HTB_Module {
 	@Subscribe
 	public static void preInit(ModulePreInitEvent e) {
 		ASMTransformer.addASMPlugin(installerASM);
+		new HTBCommand().RegisterMe();
 	}
 
 	@Subscribe
@@ -117,7 +125,7 @@ public class HTB_Module {
 		}
 		catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e1.printStackTrace(API.Impl.getAPI().OutputToClient());
 		}
     	
         println("********************");
@@ -127,7 +135,6 @@ public class HTB_Module {
         println("********************");
         println("********************");
         println("********************");
-
         
         File installDir = new File(API.Impl.getAPI().getConfigDefault(API.Impl.getAPI().getConfigJSONObject(Configuration.cfg, "processSettings"), "processWorkingDirectory", ""));
         // Installer functions as it normally does, except it gets called via this method and not the loader
@@ -135,18 +142,14 @@ public class HTB_Module {
         // This writes path.txt so the code in the installer can find the right directory
         try {
             // Might need to be changed to OS_Util.getWorkingDirectory() depending on what dir it works in.
-            FileUtils.writeStringToFile( new File(installDir, "path.txt"), installDir.getCanonicalPath() + File.separator);
+            FileUtils.writeStringToFile( new File(new File("."), "path.txt"), installDir.getCanonicalPath() + File.separator);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(API.Impl.getAPI().OutputToClient());
         }
         //Download installer as library
 
         File Installfile = null;
-        try {
-            Installfile = new File(installDir.getCanonicalPath() + File.separator + "htb3-installer.jar");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Installfile = new File(new File("."), "htb3-installer.jar");
 
         if (!Installfile.exists()) {
             try {
@@ -155,8 +158,8 @@ public class HTB_Module {
                 org.apache.commons.io.FileUtils.copyURLToFile(uRL, Installfile);
             } catch (IOException e) {
                 // Auto-generated catch block
-                e.printStackTrace();
-                System.err.println("Error Downloading " + "htb3-installer.jar");
+                e.printStackTrace(API.Impl.getAPI().OutputToClient());
+                println("Error Downloading " + "htb3-installer.jar");
             }
         } else {
             Installfile.delete();
@@ -166,28 +169,47 @@ public class HTB_Module {
                 org.apache.commons.io.FileUtils.copyURLToFile(uRL, Installfile);
             } catch (IOException e) {
                 // Auto-generated catch block
-                e.printStackTrace();
-                System.err.println("Error Downloading " + "htb3-installer.jar");
+                e.printStackTrace(API.Impl.getAPI().OutputToClient());
+                println("Error Downloading " + "htb3-installer.jar");
             }
         }
 
+        String javaPath = (System.getProperty("java.home") + File.separator + "java");
+        if (OS_Util.isWinNT()) {
+        	javaPath = (System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw.exe");
+        }
+        
         try {
-			ProcessBuilder pb1 = new ProcessBuilder("/usr/bin/java", "-jar", Installfile.toPath().toString(), "--installServer");
-			pb1.redirectOutput(Redirect.PIPE);
+			ProcessBuilder pb1 = new ProcessBuilder(javaPath, "-jar", Installfile.toPath().toString(), "--installServer");
+			pb1.inheritIO();
+			pb1.redirectErrorStream(true);
 			Process ps1 = null;
 			try {
 				ps1 = pb1.start();
 			}
 			catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(API.Impl.getAPI().OutputToClient());
 			}
+			
+			final InputStream in = ps1.getInputStream();
+
+			threadManager.getInstance().addRunnable(new Runnable() {
+				@Override
+				public void run() {
+					Scanner sc = new Scanner(in);
+						while (sc.hasNextLine()) {
+							String s = sc.nextLine();
+							println(s);
+						}
+				}
+			});
 			try {
 				ps1.waitFor();
 			}
 			catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(API.Impl.getAPI().OutputToClient());
 			}			
 		} catch (Exception e) {
 
@@ -204,9 +226,7 @@ public class HTB_Module {
     }
 
 	private static void println(String string) {
-		System.out.println(string);
 		API.Impl.getAPI().OutputToClient().println(string);
-		
 	}
 
 

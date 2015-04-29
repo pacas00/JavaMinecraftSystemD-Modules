@@ -42,6 +42,18 @@ dependencies {
 	compile "org.apache.maven:maven-core:3.0.5"
 }
 
+task WinDevTest(type: Copy) {
+    dependsOn 'jar'
+    
+    def inputFile = project.archivesBaseName + '-' + project.version + '.jar'
+    def outputFile = project.archivesBaseName + '.jar'
+    
+    from ('target/libs/')
+    into ('C:\\Users\\Peter\\.JMSDd\\modules\\')
+    include (inputFile)
+    rename (inputFile, outputFile)
+}
+
 uploadArchives {
     repositories {
 		mavenDeployer {
