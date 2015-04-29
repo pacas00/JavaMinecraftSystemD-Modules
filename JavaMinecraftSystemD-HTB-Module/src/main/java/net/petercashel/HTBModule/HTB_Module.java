@@ -110,7 +110,7 @@ public class HTB_Module {
         }
     }
 	
-    private static void doUpdate() {
+    static void doUpdate() {
     	
     	try {
 			Thread.sleep(5000);
@@ -208,8 +208,6 @@ public class HTB_Module {
 		API.Impl.getAPI().OutputToClient().println(string);
 		
 	}
-	
-    
-	
+
 
 }
