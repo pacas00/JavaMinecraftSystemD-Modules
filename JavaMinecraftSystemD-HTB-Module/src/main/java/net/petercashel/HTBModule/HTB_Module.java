@@ -112,7 +112,6 @@ public class HTB_Module {
             File File = new File(dir + filename);
             org.apache.commons.io.FileUtils.copyURLToFile(URL, File);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             System.err.println("Error Downloading " + filename);
         }
@@ -124,7 +123,6 @@ public class HTB_Module {
 			Thread.sleep(5000);
 		}
 		catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace(API.Impl.getAPI().OutputToClient());
 		}
     	
@@ -151,7 +149,7 @@ public class HTB_Module {
         File Installfile = null;
         Installfile = new File(new File("."), "htb3-installer.jar");
 
-        if (!Installfile.exists()) {
+        if (Installfile.exists()) Installfile.delete();
             try {
                 URL uRL;
                 uRL = new URL(getTxtRecord("launcher.petercashel.net"));
@@ -161,18 +159,6 @@ public class HTB_Module {
                 e.printStackTrace(API.Impl.getAPI().OutputToClient());
                 println("Error Downloading " + "htb3-installer.jar");
             }
-        } else {
-            Installfile.delete();
-            try {
-                URL uRL;
-                uRL = new URL(getTxtRecord("launcher.petercashel.net"));
-                org.apache.commons.io.FileUtils.copyURLToFile(uRL, Installfile);
-            } catch (IOException e) {
-                // Auto-generated catch block
-                e.printStackTrace(API.Impl.getAPI().OutputToClient());
-                println("Error Downloading " + "htb3-installer.jar");
-            }
-        }
 
         String javaPath = (System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
         if (OS_Util.isWinNT()) {
@@ -184,6 +170,7 @@ public class HTB_Module {
 			pb1.inheritIO();
 			pb1.redirectErrorStream(true);
 			Process ps1 = null;
+			
 			try {
 				ps1 = pb1.start();
 			}
@@ -191,13 +178,15 @@ public class HTB_Module {
 				// TODO Auto-generated catch block
 				e.printStackTrace(API.Impl.getAPI().OutputToClient());
 			}
+			
 			try {
 				ps1.waitFor();
 			}
 			catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace(API.Impl.getAPI().OutputToClient());
-			}			
+			}
+
 		} catch (Exception e) {
 
 		}
@@ -212,7 +201,7 @@ public class HTB_Module {
 
     }
 
-	private static void println(String string) {
+	static void println(String string) {
 		API.Impl.getAPI().OutputToClient().println(string);
 	}
 
